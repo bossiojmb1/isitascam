@@ -84,31 +84,61 @@ https://bossiojmb1.github.io/isitascam/
 
 > The client build is configured for Pages subpaths via `client/vite.config.ts` (`base: "/isitascam/"`).
 
-### Host the backend (recommended: Render)
+### Host the backend on Render (free tier available)
 
-GitHub Pages cannot run the Node server, so host `server/` separately.
+GitHub Pages cannot run the Node server, so host `server/` separately on Render.
 
-1. Create a new **Web Service** on Render and connect your GitHub repo.
-2. Set **Root Directory**: `server`
-3. Set **Build Command**: `npm ci`
-4. Set **Start Command**: `node index.js`
-5. Add environment variables:
-   - `OPENAI_API_KEY`: your OpenAI key
-   - `PORT`: `4000` (Render may set its own PORT; the server supports that too)
-6. Deploy. You’ll get a URL like:
+#### Step 1: Create Render account and service
 
-```text
-https://isitascam-api.onrender.com
+1. Go to [render.com](https://render.com) and sign up (free account works).
+2. Click **"New +"** → **"Web Service"**.
+3. Connect your GitHub account and select the `bossiojmb1/isitascam` repository.
+4. Configure the service:
+   - **Name**: `isitascam-api` (or any name you like)
+   - **Root Directory**: `server`
+   - **Environment**: `Node`
+   - **Build Command**: `npm install` (or leave blank, Render will auto-detect)
+   - **Start Command**: `npm start`
+   - **Plan**: Free (or paid if you prefer)
+
+#### Step 2: Add environment variables
+
+In the Render dashboard for your service, go to **Environment** and add:
+
+- **Key**: `OPENAI_API_KEY`
+- **Value**: Your OpenAI API key (get it from [platform.openai.com/api-keys](https://platform.openai.com/api-keys))
+
+> Note: Render sets `PORT` automatically, so you don't need to add it.
+
+#### Step 3: Deploy
+
+Click **"Create Web Service"**. Render will:
+- Install dependencies
+- Start your server
+- Give you a URL like: `https://isitascam-api.onrender.com`
+
+**Important**: The first deploy may take 2-3 minutes. After that, Render will auto-deploy whenever you push to `main`.
+
+#### Step 4: Connect GitHub Pages to your Render backend
+
+1. Go to your GitHub repo: **https://github.com/bossiojmb1/isitascam**
+2. Go to **Settings → Secrets and variables → Actions**
+3. Click **"Variables"** tab → **"New repository variable"**
+4. Add:
+   - **Name**: `VITE_API_BASE_URL`
+   - **Value**: Your Render URL (e.g., `https://isitascam-api.onrender.com`)
+5. Click **"Add variable"**
+
+#### Step 5: Rebuild Pages
+
+Push any small change (or manually trigger the workflow) to rebuild Pages with the new API URL:
+
+```powershell
+cd "C:\Users\jimbo\Jims AI Code\isitascam"
+git commit --allow-empty -m "Trigger Pages rebuild with Render API URL"
+git push
 ```
 
-### Connect Pages → Backend
-
-In your GitHub repo settings, add an Actions variable:
-
-- **Settings → Secrets and variables → Actions → Variables**
-  - Name: `VITE_API_BASE_URL`
-  - Value: your Render URL, e.g. `https://isitascam-api.onrender.com`
-
-Then push any commit; the Pages build will rebuild with the correct API base URL.
+After the Actions workflow completes, your site at `https://bossiojmb1.github.io/isitascam/` will use your Render backend for AI checks!
 
 
