@@ -7,7 +7,10 @@ const PORT = process.env.PORT || 4000;
 
 app.use(
   cors({
-    origin: "http://localhost:5174",
+    origin: [
+      "http://localhost:5174",
+      "https://bossiojmb1.github.io"
+    ],
     methods: ["POST", "OPTIONS"],
     allowedHeaders: ["Content-Type"]
   })

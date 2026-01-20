@@ -37,7 +37,10 @@ function App() {
 
       if (useAi) {
         try {
-          const res = await fetch("http://localhost:4000/api/check-ai", {
+          const apiBase =
+            (import.meta as unknown as { env: Record<string, string | undefined> }).env
+              .VITE_API_BASE_URL ?? "http://localhost:4000";
+          const res = await fetch(`${apiBase.replace(/\\/$/, "")}/api/check-ai`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
